@@ -1,0 +1,23 @@
+# Kernel module build artifacts
+*.ko
+*.o
+*.mod
+*.mod.c
+*.mod.o
+*.order
+*.symvers
+*.cmd
+.tmp_versions/
+.cache.mk
+
+# Editor and OS files
+*~
+*.swp
+*.swo
+.*.swp
+.DS_Store
+Thumbs.db
+
+# Do NOT ignore lib/*.o — those are precompiled Broadcom blobs required for linking
+!lib/
+!lib/**
