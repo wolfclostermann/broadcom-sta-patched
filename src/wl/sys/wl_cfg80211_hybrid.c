@@ -1927,6 +1927,17 @@ static s32 wl_alloc_wdev(struct device *dev, struct wireless_dev **rwdev)
 	}
 	set_wiphy_dev(wdev->wiphy, dev);
 	wdev->wiphy->max_scan_ssids = WL_NUM_SCAN_MAX;
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(4, 4, 0)
+	/* Driver does not implement per-scan MAC randomization, but scanning
+	 * with the real MAC is harmless for a one-off request; advertising
+	 * this avoids wpa_supplicant's default scan-time randomization being
+	 * rejected outright by cfg80211 core before ever reaching this driver. */
+	wdev->wiphy->features |= NL80211_FEATURE_SCAN_RANDOM_MAC_ADDR;
+#endif
+	/* Driver ignores request->ie entirely in wl_cfg80211_scan(); this is
+	 * only to stop cfg80211 core rejecting scans that carry IEs (e.g.
+	 * wpa_supplicant probe-request IEs) before the driver ever sees them. */
+	wdev->wiphy->max_scan_ie_len = 2048;
 #if LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 33)
 	wdev->wiphy->max_num_pmkids = WL_NUM_PMKIDS_MAX;
 #endif
